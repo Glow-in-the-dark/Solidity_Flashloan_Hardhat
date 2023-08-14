@@ -247,7 +247,7 @@ we need to approve the transfer of DAI and USDC tokens for the DEX.
 (reason being the first STEP of our Custom logic, is to DEPOSIT USDC),
 and the `depositUSDC()` code in the DEX.sol, it is using `transferFrom`, and one would need to pre-approve, before transferFrom can be successful.
 
-As a user, i would then call the external function approve
+By calling the external function `approveXXX(<AMT>)` we hardcoded to allow the DEX address to use the AMT
 ![Alt text](Approvals.png)
 So we approved 1000 USDC, as the first line of Custom Contract,
 ![Alt text](CustomLogic.png)
