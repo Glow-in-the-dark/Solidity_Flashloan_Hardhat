@@ -48,16 +48,18 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase{
         bytes calldata params
     ) external override returns (bool){
         // 
-        // This contract now has the Funds requested
+        // by the time it runs this part, 
+        // this contract should already have the Funds requested (e.g USDC_addr, 1000 USDC)
         //
+        // we will then deposit this 1000 USD into the DexContract
         // //  ??? Approval First
-        // dai.approve(dexContractAddress, 1000000000);
-        // usdc.approve(dexContractAddress, 1000000000);
+        usdc.approve(dexContractAddress, 2000000000);
+        dai.approve(dexContractAddress, 2000000000000000000000);
         // Our CUSTOM logic goes here:
         // Arbitrage operation
         dexContract.depositUSDC(1000000000); // 1000 USDC
         dexContract.buyDAI(); //bought Dai at discount, and transfer back to us.
-        dexContract.depositDAI(dai.balanceOf(address(this))); // We deposited the DAI we had, back into the Dex contract, to facilitate selling,
+        dexContract.depositDAI(dai.balanceOf(address(this))); // We deposited all the DAI we had, back into the Dex contract, to facilitate selling,
         dexContract.sellDAI(); // Sell those DAI, into more USDC, and now we have more than enough USDC to pay for it.
         
         // this part then returns it back to the pool.
