@@ -52,9 +52,11 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase{
         // this contract should already have the Funds requested (e.g USDC_addr, 1000 USDC)
         //
         // we will then deposit this 1000 USD into the DexContract
-        // //  ??? Approval First
-        usdc.approve(dexContractAddress, 2000000000);
-        dai.approve(dexContractAddress, 2000000000000000000000);
+
+        // //  ??? Can we just directly do Approval here First ? rather than doing it manually?
+        // usdc.approve(dexContractAddress, 2000000000);
+        // dai.approve(dexContractAddress, 2000000000000000000000);
+
         // Our CUSTOM logic goes here:
         // Arbitrage operation
         dexContract.depositUSDC(1000000000); // 1000 USDC
