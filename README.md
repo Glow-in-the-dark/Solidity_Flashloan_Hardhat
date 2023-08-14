@@ -267,5 +267,6 @@ https://sepolia.etherscan.io/tx/0x5eea159840a82672bffe126adb0848f91b5a6c21a23e32
 ![Alt text](FlashLoanTx.png)
 The remaining Profit, will be left in the contract, to be then withdraw() out by the OWNER of the contract.
 
-over here, we can also see the allowance has dropped. After the execution.
-![Alt text](<Screenshot 2023-08-14 at 5.39.33 PM.png>)
+We can check the remaining Profits in the contract, by using `getBalance(<token_address>)` , there, we have $110 in profits !!!
+![Alt text](<Screenshot 2023-08-14 at 5.46.38 PM.png>)
+also, we can also see the allowance has dropped. After the execution.
