@@ -184,7 +184,11 @@ FlashLoan Contract deployed: 0x4211b7D29a5C29dE0B77332f60b5B885e0B6df5E
 
 sepolia USDC's address: 0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f
 
-when we call:
+### **TO EXECUTE FLASHLOAN**
+
+(BORROW a single asset)
+
+we call the function:
 `requestFlashLoan(0xda9d4f9b69ac6C22e444eD9aF0CfC043b7a7f53f, 1000000)` 1000000 means 1 USDC , because USDC unlike others(18), has 6 decimals.
 
 ![Alt text](simpleFlashLoan.png)
@@ -194,11 +198,12 @@ we can see:
 - fees is 0.0005 USDC
 - if 20 USDC, then 0.01 USDC as fee.
 
-## Now,to actually perform a FlashLoan, and Execute it with out Logic
+## Now,to actually perform a FlashLoan, and Execute it with our CUSTOM Logic
 
 ### 1) we use an example "DEX" for us to execute a flashloan trade (Dex.sol)
 
 we set up -> Dex.sol, which is simulated a decentralized exchange.
+(while we set this up as a single dex, it can also be 2 separate DEX, that we are arbitraging between)
 
 - 2 tokens (Dai & USDC)
 
@@ -216,7 +221,51 @@ and we got
 
 > FakeDex Contract deployed: 0xB8De86Fce1BDE6e3D33CEb00C4e3F0c7D5C6752d
 
-### 2)Create Custom FlashLoanArbitrage.sol (modified from FlashLoan.sol)
+[ we then send in some e.g 2000 DAI, and 2000 USDC (ADD LIQUIDITY) so the "FakeDex" have some Dai to sell to us. when we execute the flashloan]
+
+### 2)Create and deploy Custom FlashLoanArbitrage.sol (modified from FlashLoan.sol)
 
 See the file:
-FlashLoanArbitrage.sol
+_FlashLoanArbitrage.sol_
+(edited the:
+
+- contract name,
+- add custom operation under executeOperation(),
+- add approval/allowance of ERC20 tokens to the contracts)
+
+write the _deployFlashLoanArbitrage.js_ deploy script
+
+to compile and deploy on the sepolia testnet:
+
+> npx hardhat run --network sepolia scripts/deployFlashLoanArbitrage.js
+
+FlashLoanArbitrage Contract deployed: 0x4333235B05616Ea1C27400965B1C2460B03a13AC
+
+### 3)after all contracts are deployed,
+
+we need to approve the transfer of DAI and USDC tokens for the DEX.
+(reason being the first STEP of our Custom logic, is to DEPOSIT USDC),
+and the `depositUSDC()` code in the DEX.sol, it is using `transferFrom`, and one would need to pre-approve, before transferFrom can be successful.
+
+As a user, i would then call the external function approve
+![Alt text](Approvals.png)
+So we approved 1000 USDC, as the first line of Custom Contract,
+![Alt text](CustomLogic.png)
+then we also approved 1200 DAI too.
+( note: can we approve > 0 amt, even with 0 balances.)
+
+now that it's done, we call the RUN the actual FlashLoan
+
+### 4) execute the FlashLoan
+
+run the `requestFlashLoan()`
+since we are borrowing USDC, with the amount of 1000, (rmb to add 6 decimal)
+`requestFlashLoan(<USDC_addr>, 1000000000)`
+
+https://sepolia.etherscan.io/tx/0x5eea159840a82672bffe126adb0848f91b5a6c21a23e326c58f799ec094e12ed
+(Flashloan + Arbitrage Succeeded !!)
+![Alt text](FlashLoanTx.png)
+The remaining Profit, will be left in the contract, to be then withdraw() out by the OWNER of the contract.
+
+over here, we can also see the allowance has dropped. After the execution.
+![Alt text](<Screenshot 2023-08-14 at 5.39.33 PM.png>)

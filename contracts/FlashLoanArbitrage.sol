@@ -15,7 +15,7 @@ interface IDex {
 }
 
 
-contract FlashLoan is FlashLoanSimpleReceiverBase{
+contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase{
     address payable owner; //we want to be able to withdraw fund from this contract, cuz there should be profits, and we want to implement a withdrawal function where only Owner can withdraw.
     
     // Aave's ERC20 Token addresses on Sepolia (Not-Goerli) network
@@ -50,8 +50,11 @@ contract FlashLoan is FlashLoanSimpleReceiverBase{
         // 
         // This contract now has the Funds requested
         //
+        // //  ??? Approval First
+        // dai.approve(dexContractAddress, 1000000000);
+        // usdc.approve(dexContractAddress, 1000000000);
         // Our CUSTOM logic goes here:
-        // Arbitrage pperation
+        // Arbitrage operation
         dexContract.depositUSDC(1000000000); // 1000 USDC
         dexContract.buyDAI(); //bought Dai at discount, and transfer back to us.
         dexContract.depositDAI(dai.balanceOf(address(this))); // We deposited the DAI we had, back into the Dex contract, to facilitate selling,
