@@ -1,10 +1,10 @@
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.19; //need to change it to 0.6.6 & also mabe at hardhat.config.js
 
-import './UniswapV2Library.sol';
-import './interfaces/IUniswapV2Router02.sol';
-import './interfaces/IUniswapV2Pair.sol';
-import './interfaces/IUniswapV2Factory.sol';
-import './interfaces/IERC20.sol';
+import '@uniswap/v2-periphery/contracts/libraries/UniswapV2Library.sol';
+import '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
+import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol';
+import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import '@uniswap/v2-core/contracts/interfaces/IERC20.sol';
 
 contract Arbitrage {
   address public factory; //factory of uniswap (central hub in uni's eco). allow to have some info about the different liquidity pools.
@@ -39,7 +39,7 @@ contract Arbitrage {
     IUniswapV2Pair(pairAddress).swap(
       amount0, // one of this gonna be 0
       amount1, //
-      address(this), // this address which is where we want to reieve the tkn we wanna borrow.
+      address(this), // this address which is where we want to recieve the tkn we wanna borrow.
       bytes('not empty') // Make sure it's "not empty"
       // This is what's going to trigger the FlashLoan. 
       // Otherwise if EMPTY, it will just tigger a normal swap operation when a trader just want to buy/sell some tokens. And not tigger the FlashLoan.
